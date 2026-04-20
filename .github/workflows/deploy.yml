@@ -19,7 +19,15 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Publish Blazor WebAssembly
-        run: dotnet publish SlowLivingCompass.Client/SlowLivingCompass.Client.csproj -c Release -o release -p:StaticWebAssetFingerprintingEnabled=false -p:StaticWebAssetsFingerprintContent=false
+        run: dotnet publish SlowLivingCompass.Client/SlowLivingCompass.Client.csproj -c Release -o release
+
+      - name: Fix fingerprinted assets
+        run: |
+          find release/wwwroot/_framework -name 'blazor.webassembly.*.js' -exec cp {} release/wwwroot/_framework/blazor.webassembly.js \;
+          find release/wwwroot/_framework -name 'dotnet.*.js' -exec cp {} release/wwwroot/_framework/dotnet.js \;
+          find release/wwwroot/_framework -name 'dotnet.native.*.js' -exec cp {} release/wwwroot/_framework/dotnet.native.js \;
+          find release/wwwroot/_framework -name 'dotnet.runtime.*.js' -exec cp {} release/wwwroot/_framework/dotnet.runtime.js \;
+          find release/wwwroot/_framework -name 'dotnet.native.*.wasm' -exec cp {} release/wwwroot/_framework/dotnet.native.wasm \;
 
       - name: Change base-tag in index.html from / to SlowLivingCompass
         run: sed -i 's/<base href="\/" \/>/<base href="\/SlowLivingCompass\/" \/>/g' release/wwwroot/index.html
