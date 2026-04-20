@@ -1,0 +1,4 @@
+C:\workspace\4_13\local_release\wwwroot\index.html
+C:\workspace\4_13\local_release\SlowLivingCompass.Client.runtimeconfig.json
+C:\workspace\4_13\local_release\dotnet.js
+C:\workspace\4_13\local_release\web.config

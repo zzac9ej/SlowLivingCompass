@@ -1,0 +1,122 @@
+[
+  {
+    "id": "1",
+    "name": "興波咖啡 華山旗艦店",
+    "description": "曾獲世界最佳咖啡館，充滿植栽與復古工業風的高質感空間。",
+    "imageUrl": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80",
+    "tags": ["咖啡", "世界冠軍", "平靜", "質感"],
+    "isFood": true,
+    "latitude": 25.0441,
+    "longitude": 121.5283
+  },
+  {
+    "id": "2",
+    "name": "好物 Spirit 咖啡",
+    "description": "不僅是《想見你》拍攝場景，更有神級牛肉麵與安靜的插座座位。",
+    "imageUrl": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&w=400&q=80",
+    "tags": ["老宅", "有插座", "寫Code", "適合一個人看書"],
+    "isFood": true,
+    "latitude": 25.0255,
+    "longitude": 121.5492
+  },
+  {
+    "id": "4",
+    "name": "紫藤廬 Wistaria Tea House",
+    "description": "百年日式古蹟茶館，專注於當下體驗寂靜的茶道與哲學精神。",
+    "imageUrl": "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=400&q=80",
+    "tags": ["茶", "極靜", "獨處", "安靜"],
+    "isFood": false,
+    "latitude": 25.0257,
+    "longitude": 121.5332
+  },
+  {
+    "id": "11",
+    "name": "中央書局 Central Book Store",
+    "description": "台中老牌文化地標，重獲新生後的空間充滿木質香氣與書卷氣息。",
+    "imageUrl": "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=400&q=80",
+    "tags": ["台中", "書店", "文化", "安靜"],
+    "isFood": false,
+    "latitude": 24.1378,
+    "longitude": 120.6811
+  },
+  {
+    "id": "12",
+    "name": "憲賣咖啡 熟成店",
+    "description": "台中的丹麥風情，陽光灑入大片落地窗，享受北歐式的愜意早晨。",
+    "imageUrl": "https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=400&q=80",
+    "tags": ["台中", "早午餐", "陽光", "質感"],
+    "isFood": true,
+    "latitude": 24.1534,
+    "longitude": 120.6455
+  },
+  {
+    "id": "13",
+    "name": "林百貨 Hayahi Department Store",
+    "description": "全台最老古蹟百貨，在復古電梯與露天神社間感受時光交錯。",
+    "imageUrl": "https://images.unsplash.com/photo-1582657233895-0f37a3f150c0?auto=format&fit=crop&w=400&q=80",
+    "tags": ["台南", "古蹟", "散步", "夕陽"],
+    "isFood": false,
+    "latitude": 22.9918,
+    "longitude": 120.2023
+  },
+  {
+    "id": "14",
+    "name": "窄門咖啡 Narrow Door Cafe",
+    "description": "台南特有的幽默與靜謐，窄到需要側身進入，卻有最遼闊的心靈空間。",
+    "imageUrl": "https://images.unsplash.com/photo-1507133311040-53d2653f9979?auto=format&fit=crop&w=400&q=80",
+    "tags": ["台南", "老宅", "極靜", "獨處"],
+    "isFood": true,
+    "latitude": 22.9893,
+    "longitude": 120.2045
+  },
+  {
+    "id": "15",
+    "name": "駁二藝術特區 Pier-2 Art Center",
+    "description": "高雄海港邊的藝術避風港，廢棄倉庫化身畫廊，適合隨著海風慢行。",
+    "imageUrl": "https://images.unsplash.com/photo-1549463590-44971c267c7e?auto=format&fit=crop&w=400&q=80",
+    "tags": ["高雄", "海風", "藝術", "散步"],
+    "isFood": false,
+    "latitude": 22.6204,
+    "longitude": 120.2815
+  },
+  {
+    "id": "16",
+    "name": "灰咖啡 Hway Coffee",
+    "description": "隱身高雄老宅二樓，昏暗的燈光與豐富的藏書，是深夜讀書的最佳去處。",
+    "imageUrl": "https://images.unsplash.com/photo-1481833761820-0509d3217039?auto=format&fit=crop&w=400&q=80",
+    "tags": ["高雄", "深夜", "老宅", "平靜"],
+    "isFood": true,
+    "latitude": 22.6267,
+    "longitude": 120.3015
+  },
+  {
+    "id": "18",
+    "name": "小小樹食 大安店",
+    "description": "最具質感的蔬食晚餐，讓精緻的料理與綠色植栽緩解一天的疲憊。",
+    "imageUrl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=400&q=80",
+    "tags": ["晚餐", "質感", "蔬食", "台北"],
+    "isFood": true,
+    "latitude": 25.0416,
+    "longitude": 121.5434
+  },
+  {
+    "id": "19",
+    "name": "詹記麻辣火鍋 敦南店",
+    "description": "復古台式摩登氛圍，在熱氣騰騰的窩底中感受最在地、最熱鬧的台北夜晚。",
+    "imageUrl": "https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=400&q=80",
+    "tags": ["火鍋", "晚餐", "台式", "熱鬧"],
+    "isFood": true,
+    "latitude": 25.0253,
+    "longitude": 121.5451
+  },
+  {
+    "id": "20",
+    "name": "赤崁璽樓",
+    "description": "隱身巷弄的洋樓老宅，提供精緻的中西婚合蔬食晚餐，感受台南府城的優雅時光。",
+    "imageUrl": "https://images.unsplash.com/photo-1544148103-0773bf10d330?auto=format&fit=crop&w=400&q=80",
+    "tags": ["台南", "老宅", "精緻", "晚餐"],
+    "isFood": true,
+    "latitude": 22.9967,
+    "longitude": 120.1995
+  }
+]
