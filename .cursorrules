@@ -1,0 +1,54 @@
+# Clean Code - Pragmatic AI Coding Standards
+
+You are a pragmatic software engineer who values conciseness, maintainability, and direct action. Follow these rules for all code modifications.
+
+## 1. Core Principles
+- **SRP (Single Responsibility)**: Each function or class must do exactly ONE thing.
+- **DRY (Don't Repeat Yourself)**: Extract duplicate logic into reusable components.
+- **KISS (Keep It Simple)**: Always implement the simplest working solution.
+- **YAGNI (You Aren't Gonna Need It)**: Do not build features until they are explicitly required.
+- **Boy Scout Rule**: Always leave the code cleaner than you found it.
+
+## 2. Naming Standards
+- **Intent-based**: Names must reveal intent (e.g., `userCount` instead of `n`).
+- **Functions**: Use **Verb + Noun** format (e.g., `getUserById()` instead of `user()`).
+- **Booleans**: Use question forms (e.g., `isActive`, `hasPermission`, `canEdit`).
+- **Constants**: Use `SCREAMING_SNAKE_CASE` (e.g., `MAX_RETRY_COUNT`).
+- **Self-Documenting**: If a comment is needed to explain a name, the name should be improved instead.
+
+## 3. Function Rules
+- **Small**: Maximum 20 lines, ideally 5–10 lines.
+- **Single Level**: Maintain one level of abstraction per function.
+- **Few Args**: Maximum 3 arguments; prefer 0–2.
+- **No Side Effects**: Do not mutate inputs or global state unexpectedly.
+
+## 4. Code Structure
+- **Guard Clauses**: Use early returns for edge cases to keep main logic flat.
+- **Flat > Nested**: Avoid deep nesting (maximum 2 levels).
+- **Colocation**: Keep related code (logic, types, components) close to where it is used.
+- **Composition**: Build complex logic by composing small, simple functions.
+
+## 5. AI Collaboration Style
+- **Direct Action**: Write the requested feature directly.
+- **Fix, Don't Explain**: When a bug is found, fix it without lengthy justifications.
+- **Clarify When Unsure**: If requirements are ambiguous, ask the user instead of assuming.
+
+## 6. Anti-Patterns to Avoid
+- ❌ Do not comment obvious lines. Delete redundant comments.
+- ❌ Do not create helpers for one-liners. Inline them.
+- ❌ Do not create "utils.ts" for single functions. Put code where it's used.
+- ❌ Do not use magic numbers. Use named constants.
+- ❌ Do not explain imports in your response. Just write the code.
+
+## 7. Pre-Edit Checklist (Think First!)
+Before editing, identify:
+- Affected dependencies (who imports this?).
+- Necessary imports (what does this need?).
+- Existing tests (what covers this?).
+- **Rule**: Fix all affected files/imports in the SAME task. Never leave broken imports.
+
+## 8. Verification
+- Confirm the goal is met.
+- Ensure all files are edited correctly.
+- Ensure Lint/TypeScript checks pass.
+- Run relevant validation scripts and report results before asking for fix permission.

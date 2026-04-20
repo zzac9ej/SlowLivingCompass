@@ -1,0 +1,378 @@
+@page "/groupvote"
+@inject PlaceService PlaceService
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+
+<MudText Typo="Typo.h2" Class="mb-4 text-center mt-8 serif-text">佛系揪團</MudText>
+<MudText Typo="Typo.body1" Class="mb-10 text-center" Style="color: #707A65;">不費力氣的默契，從這裡開始。</MudText>
+
+<MudContainer MaxWidth="MaxWidth.Small">
+@if (_phase == VotePhase.Setup)
+{
+    <MudPaper Class="pa-8 glass-card animate-fade-in text-center" Elevation="0">
+        <MudText Typo="Typo.h5" Class="mb-6 serif-text" Color="Color.Primary">
+            今晚，你想如何做決定？
+        </MudText>
+        
+        <MudToggleGroup @bind-Value="_voteMode" T="string" Color="Color.Primary" SelectionMode="SelectionMode.SingleSelection" Class="mb-8 glass-card pa-1 mx-auto" Style="max-width: 320px;">
+            <MudToggleItem Value="@("Type")" Text="推薦品項" UnselectedIcon="@Icons.Material.Filled.Fastfood" SelectedIcon="@Icons.Material.Filled.Fastfood" />
+            <MudToggleItem Value="@("Place")" Text="盲測店家" UnselectedIcon="@Icons.Material.Filled.Store" SelectedIcon="@Icons.Material.Filled.Store" />
+        </MudToggleGroup>
+
+        @if (_voteMode == "Type")
+        {
+            <div class="mb-8">
+                <MudText Typo="Typo.subtitle1" Class="mb-6 serif-text">選擇今日的心情大類別</MudText>
+                
+                <div class="d-flex flex-column gap-3">
+                    @foreach (var theme in PlaceService.GetThemes())
+                    {
+                        <MudButton Variant="@(_selectedTheme == theme ? Variant.Filled : Variant.Outlined)"
+                                   Color="Color.Primary"
+                                   FullWidth="true"
+                                   OnClick="@(() => _selectedTheme = theme)"
+                                   Class="py-4 rounded-xl hover-lift"
+                                   StartIcon="@GetThemeIcon(theme)">
+                            @theme
+                        </MudButton>
+                    }
+                </div>
+                
+                @if (!string.IsNullOrEmpty(_selectedTheme))
+                {
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Text" Class="mt-4">
+                        系統將自動為您挑選 8 種「@_selectedTheme」品項進入票選！
+                    </MudAlert>
+                }
+            </div>
+        }
+
+        <MudNumericField @bind-Value="_playerCount" Min="2" Max="10" Label="同行人數" Variant="Variant.Outlined" Class="mb-8 mx-auto" Style="max-width: 200px;" />
+        
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" 
+                   OnClick="StartVoting" 
+                   Disabled="@(_voteMode == "Type" && string.IsNullOrEmpty(_selectedTheme))"
+                   Class="hover-lift px-8 py-3 rounded-pill" Size="Size.Large">
+            @( _voteMode == "Type" ? "開始美味海選" : "開始寧靜探索" )
+        </MudButton>
+    </MudPaper>
+}
+else if (_phase == VotePhase.Voting)
+{
+    <div class="animate-fade-in text-center">
+        <MudText Typo="Typo.h4" Class="mb-8 serif-text" Color="Color.Primary">請靜靜地將手機遞給第 <b>@_currentPlayerIndex</b> 位知己</MudText>
+        
+        <MudCard Elevation="0" Class="glass-card mx-auto mb-8" Style="max-width: 500px;">
+            @if (_voteMode == "Place")
+            {
+                <MudCardMedia Image="@_currentCandidates[_currentCandidateIndex].ImageUrl" Height="350" Style="border-top-left-radius: 16px; border-top-right-radius: 16px;" />
+                <MudCardContent Class="pa-6">
+                    <MudText Typo="Typo.h5" Class="serif-text">@_currentCandidates[_currentCandidateIndex].Name</MudText>
+                    <MudText Typo="Typo.body2" Class="mt-2" Style="color: #707A65;">隨心所欲，沒有對錯。</MudText>
+                </MudCardContent>
+            }
+            else
+            {
+                <div class="d-flex align-center justify-center" style="height: 350px; background: linear-gradient(135deg, #FDFCF0 0%, #E9EDC9 100%);">
+                    <MudIcon Icon="@GetTagIcon(_currentTags[_currentCandidateIndex])" Style="font-size: 120px;" Color="Color.Primary" />
+                </div>
+                <MudCardContent Class="pa-6">
+                    <MudText Typo="Typo.h4" Class="serif-text mb-2">@_currentTags[_currentCandidateIndex]</MudText>
+                    <MudText Typo="Typo.body2" Style="color: #707A65;">你今天期待這個品項嗎？</MudText>
+                </MudCardContent>
+            }
+            <MudCardActions Class="justify-space-between px-8 pb-6 pt-2">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Color="Color.Default" Size="Size.Large" Class="hover-lift" OnClick="() => Vote(false)" Style="border: 1px solid #D1D5CB;" />
+                <MudIconButton Icon="@Icons.Material.Filled.Favorite" Color="Color.Secondary" Size="Size.Large" Class="hover-lift" OnClick="() => Vote(true)" Style="border: 1px solid #D4A373;" />
+            </MudCardActions>
+        </MudCard>
+        
+        <MudText Typo="Typo.caption" Class="mt-4" Style="letter-spacing: 2px;">探索進度: @(_currentCandidateIndex + 1) / @(_voteMode == "Place" ? _currentCandidates.Count : _currentTags.Count)</MudText>
+    </div>
+}
+else if (_phase == VotePhase.Revealing)
+{
+    <div class="text-center" style="padding: 80px 0;">
+        <MudText Typo="Typo.h2" Class="serif-text reveal-countdown" Style="font-size: 5rem; color: #D4A373;">
+            @_revealText
+        </MudText>
+    </div>
+}
+else if (_phase == VotePhase.Result)
+{
+    @if (_showConfetti)
+    {
+        <div class="confetti-container">
+            @for (int i = 0; i < 40; i++)
+            {
+                var left = Random.Shared.Next(0, 100);
+                var delay = Random.Shared.NextDouble() * 2;
+                var color = _confettiColors[Random.Shared.Next(_confettiColors.Length)];
+                var size = Random.Shared.Next(6, 14);
+                <div class="confetti-piece" style="left:@(left)%;animation-delay:@(delay.ToString("F1"))s;background:@color;width:@(size)px;height:@(size)px;"></div>
+            }
+        </div>
+    }
+    <div class="text-center result-bounce-in">
+        @if (_voteMode == "Place" && _winner != null)
+        {
+            <MudText Typo="Typo.h3" Class="mb-6 serif-text" Color="Color.Secondary">🎉 就決定是這裡了！</MudText>
+            <MudCard Elevation="0" Class="glass-card mx-auto mb-6" Style="max-width: 500px;">
+                <MudCardMedia Image="@_winner.ImageUrl" Height="350" Style="border-radius: 16px 16px 0 0;" />
+                <MudCardContent Class="pa-6">
+                    <MudText Typo="Typo.h4" Class="serif-text mb-3" Color="Color.Primary">@_winner.Name</MudText>
+                    <MudText Typo="Typo.body1" Style="line-height: 1.8; color: #5A6250;">@_winner.Description</MudText>
+                    <div class="text-center mt-6">
+                        <MudButton Href="@($"https://www.google.com/maps/dir/?api=1&origin={PlaceService.UserLat},{PlaceService.UserLng}&destination={Uri.EscapeDataString(_winner.Name)}&travelmode=walking")" Target="_blank" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" Class="hover-lift rounded-pill px-8" StartIcon="@Icons.Material.Filled.Navigation">
+                            現在出發
+                        </MudButton>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        }
+        else if (_voteMode == "Type" && !string.IsNullOrEmpty(_winningTag))
+        {
+            <MudText Typo="Typo.h3" Class="mb-4 serif-text" Color="Color.Secondary">🎉 今天的共識是</MudText>
+            <MudText Typo="Typo.h2" Class="mb-8 serif-text" Color="Color.Primary" Style="font-size: 3rem;">@_winningTag</MudText>
+            
+            @if (_recommendedShops.Any())
+            {
+                <MudText Typo="Typo.body1" Class="mb-8" Style="color: #707A65;">這附近的這些角落，正適合現在的你們：</MudText>
+                
+                <MudGrid Class="mb-8">
+                    @foreach (var place in _recommendedShops)
+                    {
+                        <MudItem xs="12" sm="4">
+                            <MudCard Elevation="0" Class="glass-card h-100">
+                                <MudCardMedia Image="@place.ImageUrl" Height="140" />
+                                <MudCardContent Class="pa-4">
+                                    <MudText Typo="Typo.subtitle1" Class="serif-text">@place.Name</MudText>
+                                    <MudText Typo="Typo.caption">距您約 @(place.DistanceInMeters)m</MudText>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudItem>
+                    }
+                </MudGrid>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-8 rounded-xl">
+                    在此距離內暫無「@_winningTag」的精選名單，但別擔心，直接在地圖搜尋會有更多發現。
+                </MudAlert>
+            }
+
+            <div class="d-flex flex-column gap-4 align-center">
+                <MudButton Href="@PlaceService.GetMapSearchUrl(_winningTag, PlaceService.UserLat, PlaceService.UserLng)" 
+                           Target="_blank" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" 
+                           Class="hover-lift rounded-pill px-10 py-4" StartIcon="@Icons.Material.Filled.Map">
+                    在 Google Map 查看附近所有「@_winningTag」
+                </MudButton>
+                
+                <MudText Typo="Typo.caption" Color="Color.Default">將直接顯示附近評分最高的推薦店家</MudText>
+            </div>
+        }
+        <MudButton Class="mt-12 hover-lift rounded-pill px-8" Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset">重新開始</MudButton>
+    </div>
+}
+</MudContainer>
+
+@code {
+    private enum VotePhase { Setup, Voting, Revealing, Result }
+    private VotePhase _phase = VotePhase.Setup;
+    
+    private string _voteMode = "Type";
+    private string _selectedTheme = "正餐";
+    private int _playerCount = 2;
+    private int _currentPlayerIndex = 1;
+    private int _currentCandidateIndex = 0;
+    
+    private bool _isLoadingTags = true;
+    private bool _showConfetti = false;
+    private string _revealText = "";
+    private string[] _confettiColors = { "#7A9D54", "#D4A373", "#E9EDC9", "#F9A825", "#FF7043", "#AB47BC" };
+
+    private List<Place> _currentCandidates = new();
+    private List<string> _currentTags = new();
+    private string? _winningTag;
+    private List<Place> _recommendedShops = new();
+    private Dictionary<string, int> _voteTally = new();
+    private Place? _winner;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _isLoadingTags = true;
+        await PlaceService.InitializeAsync(Http);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
+                var result = await JSRuntime.InvokeAsync<GeolocationData?>("window.getUserGeolocation");
+                if (result != null)
+                {
+                    PlaceService.UserLat = result.Latitude;
+                    PlaceService.UserLng = result.Longitude;
+                }
+            }
+            catch { /* Fallback to default coord */ }
+            finally
+            {
+                _isLoadingTags = false;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void StartVoting()
+    {
+        if (_voteMode == "Place")
+        {
+            if (PlaceService.SharedCandidates.Any())
+            {
+                _currentCandidates = new List<Place>(PlaceService.SharedCandidates);
+            }
+            else
+            {
+                _currentCandidates = PlaceService.GetRandomPlaces(5);
+            }
+            
+            if (!_currentCandidates.Any()) return;
+            _voteTally = _currentCandidates.ToDictionary(p => p.Id, p => 0);
+        }
+        else
+        {
+            _currentTags = PlaceService.GetItemsByTheme(_selectedTheme);
+            if (!_currentTags.Any()) return;
+            _voteTally = _currentTags.ToDictionary(t => t, t => 0);
+        }
+        
+        _currentPlayerIndex = 1;
+        _currentCandidateIndex = 0;
+        _phase = VotePhase.Voting;
+    }
+
+    private void Vote(bool isLike)
+    {
+        if (isLike)
+        {
+            var key = _voteMode == "Place" ? _currentCandidates[_currentCandidateIndex].Id : _currentTags[_currentCandidateIndex];
+            _voteTally[key]++;
+        }
+
+        _currentCandidateIndex++;
+        int totalLimit = _voteMode == "Place" ? _currentCandidates.Count : _currentTags.Count;
+
+        if (_currentCandidateIndex >= totalLimit)
+        {
+            _currentPlayerIndex++;
+            _currentCandidateIndex = 0;
+
+            if (_currentPlayerIndex > _playerCount)
+            {
+                _ = RevealResult();
+            }
+        }
+    }
+
+    private async Task RevealResult()
+    {
+        // Calculate result first
+        if (!_voteTally.Any()) return;
+
+        int maxVotes = _voteTally.Values.Max();
+        var winners = _voteTally.Where(kv => kv.Value == maxVotes).Select(kv => kv.Key).ToList();
+        var random = new Random();
+        var finalWinner = winners[random.Next(winners.Count)];
+
+        if (_voteMode == "Place")
+        {
+            _winner = _currentCandidates.FirstOrDefault(p => p.Id == finalWinner);
+        }
+        else
+        {
+            _winningTag = finalWinner;
+            _recommendedShops = PlaceService.GetMatchesByTag(_winningTag, PlaceService.UserLat, PlaceService.UserLng);
+        }
+
+        // Dramatic countdown
+        _phase = VotePhase.Revealing;
+        
+        _revealText = "3";
+        StateHasChanged();
+        await Task.Delay(800);
+        
+        _revealText = "2";
+        StateHasChanged();
+        await Task.Delay(800);
+        
+        _revealText = "1";
+        StateHasChanged();
+        await Task.Delay(800);
+        
+        _revealText = "🎉";
+        StateHasChanged();
+        await Task.Delay(500);
+
+        // Show result with confetti
+        _showConfetti = true;
+        _phase = VotePhase.Result;
+        StateHasChanged();
+
+        // Hide confetti after 4 seconds
+        await Task.Delay(4000);
+        _showConfetti = false;
+        StateHasChanged();
+    }
+
+    private void Reset()
+    {
+        PlaceService.SharedCandidates.Clear();
+        _showConfetti = false;
+        _winner = null;
+        _winningTag = null;
+        _phase = VotePhase.Setup;
+    }
+
+    private string GetThemeIcon(string theme)
+    {
+        return theme switch
+        {
+            "正餐" => Icons.Material.Filled.Restaurant,
+            "小吃/宵夜" => Icons.Material.Filled.Nightlife,
+            "甜點/下午茶" => Icons.Material.Filled.BakeryDining,
+            _ => Icons.Material.Filled.Category
+        };
+    }
+
+    private string GetTagIcon(string tag)
+    {
+        return tag switch
+        {
+            "牛肉麵" => Icons.Material.Filled.SoupKitchen,
+            "滷肉飯" => Icons.Material.Filled.RiceBowl,
+            "火鍋" => Icons.Material.Filled.SoupKitchen,
+            "熱炒" => Icons.Material.Filled.DinnerDining,
+            "義大利麵" => Icons.Material.Filled.DinnerDining,
+            "拉麵" => Icons.Material.Filled.SoupKitchen,
+            "壽司" => Icons.Material.Filled.SetMeal,
+            "臭豆腐" => Icons.Material.Filled.LocalFireDepartment,
+            "滷味" => Icons.Material.Filled.TakeoutDining,
+            "鹹酥雞" => Icons.Material.Filled.Fastfood,
+            "雞排" => Icons.Material.Filled.Fastfood,
+            "燒烤" => Icons.Material.Filled.KebabDining,
+            "串燒" => Icons.Material.Filled.KebabDining,
+            "咖啡" => Icons.Material.Filled.Coffee,
+            "甜點" => Icons.Material.Filled.Cake,
+            "蛋糕" => Icons.Material.Filled.Cake,
+            "鬆餅" => Icons.Material.Filled.BakeryDining,
+            "冰品" => Icons.Material.Filled.Icecream,
+            "茶" => Icons.Material.Filled.EmojiFoodBeverage,
+            "珍珠奶茶" => Icons.Material.Filled.LocalDrink,
+            "書店" => Icons.Material.Filled.MenuBook,
+            _ => Icons.Material.Filled.AutoAwesome
+        };
+    }
+}

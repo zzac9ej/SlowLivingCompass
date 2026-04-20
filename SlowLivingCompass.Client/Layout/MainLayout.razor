@@ -1,0 +1,42 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="_hipsterTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="0" Class="glass-panel" Style="color: #4A4A4A;">
+        <MudText Typo="Typo.h5" Class="ml-3 serif-text" Style="font-weight: 600;">🌿 慢活靈感指南</MudText>
+        <MudSpacer />
+        <MudButton Href="/" Class="serif-text mx-1" Style="color: #4A4A4A;" Variant="Variant.Text">尋找避難所</MudButton>
+        <MudButton Href="/passport" Class="serif-text mx-1" Style="color: #4A4A4A;" Variant="Variant.Text">我的護照</MudButton>
+        <MudButton Href="/groupvote" Class="serif-text mx-1" Style="color: #4A4A4A;" Variant="Variant.Text">佛系揪團</MudButton>
+    </MudAppBar>
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-8 pt-8">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+    <footer style="text-align:center;padding:2rem 1rem;color:#A0A59A;font-size:0.8rem;border-top:1px dashed rgba(110,126,102,0.2);margin-top:2rem;">
+        <span class="serif-text">🌿 慢活靈感指南 v1.0</span><br/>
+        <span>© 2026 莊貽傑 — 以 AI 驅動開發 · Blazor WebAssembly + MudBlazor</span>
+    </footer>
+</MudLayout>
+
+@code {
+    private MudTheme _hipsterTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "#7A9D54",
+            Secondary = "#D4A373",
+            Background = "rgba(255, 255, 255, 0)",
+            Surface = "rgba(255, 255, 255, 0.7)", 
+            AppbarBackground = "rgba(255, 255, 255, 0)",
+            TextPrimary = "#3E4C33",
+            TextSecondary = "#707A65",
+            ActionDefault = "#7A9D54"
+        }
+    };
+}
