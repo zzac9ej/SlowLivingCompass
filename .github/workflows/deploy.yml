@@ -19,7 +19,7 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Publish Blazor WebAssembly
-        run: dotnet publish SlowLivingCompass.Client/SlowLivingCompass.Client.csproj -c Release -o release
+        run: dotnet publish SlowLivingCompass.Client/SlowLivingCompass.Client.csproj -c Release -o release -p:BlazorStaticAssetFingerprinting=false
 
       - name: Change base-tag in index.html from / to SlowLivingCompass
         run: sed -i 's/<base href="\/" \/>/<base href="\/SlowLivingCompass\/" \/>/g' release/wwwroot/index.html
