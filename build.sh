@@ -9,3 +9,10 @@ echo "{\"GeminiApiKey\": \"$GEMINI_API_KEY\"}" > SlowLivingCompass.Client/wwwroo
 
 # Publish the Blazor app
 ./dotnet/dotnet publish SlowLivingCompass.Client/SlowLivingCompass.Client.csproj -c Release -o release
+
+# Fix fingerprinted assets
+find release/wwwroot/_framework -name 'blazor.webassembly.*.js' -exec cp {} release/wwwroot/_framework/blazor.webassembly.js \;
+find release/wwwroot/_framework -name 'dotnet.*.js' -exec cp {} release/wwwroot/_framework/dotnet.js \;
+find release/wwwroot/_framework -name 'dotnet.native.*.js' -exec cp {} release/wwwroot/_framework/dotnet.native.js \;
+find release/wwwroot/_framework -name 'dotnet.runtime.*.js' -exec cp {} release/wwwroot/_framework/dotnet.runtime.js \;
+find release/wwwroot/_framework -name 'dotnet.native.*.wasm' -exec cp {} release/wwwroot/_framework/dotnet.native.wasm \;
