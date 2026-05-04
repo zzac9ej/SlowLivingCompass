@@ -1,107 +1,11 @@
 @page "/passport"
-@inject JourneyService JourneyService
+@page "/passport"
 
-<MudText Typo="Typo.h2" Class="mb-4 serif-text text-center mt-8">探索護照</MudText>
-<MudText Typo="Typo.body1" Class="mb-10 text-center" Style="color: #707A65;">記錄你的每一次喘息與放空。</MudText>
-
-@if (_isLoading)
-{
-    <div class="d-flex justify-center my-10">
-        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Large" />
-    </div>
-}
-else
-{
-    <MudContainer MaxWidth="MaxWidth.Small">
-        @* === 等級徽章卡片 === *@
-        <MudPaper Class="pa-8 glass-card animate-fade-in text-center mb-8" Elevation="0">
-            <div class="badge-glow" style="font-size: 4rem; margin-bottom: 0.5rem;">@_level.Badge</div>
-            <MudText Typo="Typo.h4" Class="serif-text" Color="Color.Primary">@_level.Title</MudText>
-            <MudText Typo="Typo.body2" Class="mt-2" Style="color: #707A65;">@_level.Description</MudText>
-            
-            <div class="d-flex justify-center gap-8 mt-6">
-                <div class="text-center">
-                    <MudText Typo="Typo.h3" Class="serif-text" Color="Color.Primary">@_visitCount</MudText>
-                    <MudText Typo="Typo.caption">探索次數</MudText>
-                </div>
-                <div class="text-center">
-                    <MudText Typo="Typo.h3" Class="serif-text" Color="Color.Secondary">@_uniquePlaces</MudText>
-                    <MudText Typo="Typo.caption">不同角落</MudText>
-                </div>
-            </div>
-
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SimulateVisit" Class="hover-lift px-8 py-3 rounded-pill mt-8" Size="Size.Large" StartIcon="@Icons.Material.Filled.AddLocationAlt">
-                模擬探索打卡
-            </MudButton>
-        </MudPaper>
-
-        @* === 造訪歷史時間軸 === *@
-        @if (_history.Any())
-        {
-            <MudPaper Class="pa-6 glass-card animate-fade-in" Elevation="0">
-                <MudText Typo="Typo.h6" Class="serif-text mb-4" Color="Color.Primary">📜 探索足跡</MudText>
-                
-                <MudTimeline TimelinePosition="TimelinePosition.Start">
-                    @foreach (var visit in _history.OrderByDescending(v => v.VisitedAt).Take(10))
-                    {
-                        <MudTimelineItem Color="Color.Primary" Size="Size.Small">
-                            <ItemContent>
-                                <MudText Typo="Typo.subtitle2" Class="serif-text">@visit.PlaceName</MudText>
-                                <MudText Typo="Typo.caption" Style="color: #A0A59A;">
-                                    @visit.VisitedAt.ToString("yyyy/MM/dd HH:mm") · @visit.Tag
-                                </MudText>
-                            </ItemContent>
-                        </MudTimelineItem>
-                    }
-                </MudTimeline>
-            </MudPaper>
-        }
-        else
-        {
-            <MudPaper Class="pa-8 glass-card animate-fade-in text-center" Elevation="0">
-                <MudIcon Icon="@Icons.Material.Filled.Explore" Style="font-size: 4rem; color: #D1D5CB;" Class="mb-4" />
-                <MudText Typo="Typo.body1" Style="color: #A0A59A;">尚未留下任何足跡。</MudText>
-                <MudText Typo="Typo.body2" Style="color: #A0A59A;">去「尋找避難所」開始你的慢活旅程吧！</MudText>
-            </MudPaper>
-        }
-    </MudContainer>
-}
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column align-center justify-center my-16 py-16 text-center">
+    <MudIcon Icon="@Icons.Material.Filled.Construction" Style="font-size: 6rem; color: #D1D5CB;" Class="mb-6" />
+    <MudText Typo="Typo.h4" Class="serif-text mb-2" Style="color: #4A4A4A;">我的護照</MudText>
+    <MudText Typo="Typo.h6" Class="serif-text mb-8" Color="Color.Primary">🚧 此功能還在開發中...</MudText>
+</MudContainer>
 
 @code {
-    private int _visitCount = 0;
-    private int _uniquePlaces = 0;
-    private bool _isLoading = true;
-    private List<VisitRecord> _history = new();
-    private (string Badge, string Title, string Description) _level;
-
-    private string[] _demoPlaces = { "興波咖啡 華山旗艦店", "紫藤廬 Wistaria", "窄門咖啡", "詹記麻辣火鍋", "林百貨", "駁二藝術特區", "灰咖啡", "中央書局" };
-    private string[] _demoTags = { "咖啡", "茶道", "老宅", "火鍋", "古蹟", "藝術", "深夜", "書店" };
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await LoadData();
-            StateHasChanged();
-        }
-    }
-
-    private async Task LoadData()
-    {
-        _isLoading = true;
-        _history = await JourneyService.GetVisitHistoryAsync();
-        _visitCount = _history.Count;
-        _uniquePlaces = _history.Select(h => h.PlaceName).Distinct().Count();
-        _level = JourneyService.GetLevel(_visitCount);
-        _isLoading = false;
-    }
-
-    private async Task SimulateVisit()
-    {
-        var random = new Random();
-        var place = _demoPlaces[random.Next(_demoPlaces.Length)];
-        var tag = _demoTags[random.Next(_demoTags.Length)];
-        await JourneyService.AddVisitAsync(place, tag);
-        await LoadData();
-    }
 }

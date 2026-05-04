@@ -10,7 +10,7 @@
     <MudText Typo="Typo.body1" Align="Align.Center" Class="mb-8" Style="color: #6E7E66;">告訴我你現在的心情，讓全知嚮導為你推薦最適合放空的角落。</MudText>
 
     <MudCard Elevation="3" Class="pa-6 mx-auto glass-panel mb-8" Style="border-radius: 16px;">
-        <MudTextField T="string" @bind-Value="_userMood" Label="你現在想逃離什麼？或是想要什麼感覺？" Variant="Variant.Outlined" Lines="4" Class="mb-4" />
+        <MudTextField T="string" @bind-Value="_userMood" Label="你現在想要什麼感覺？" Variant="Variant.Outlined" Lines="4" Class="mb-4" />
         <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" FullWidth="true" OnClick="MatchVibe" Disabled="@(_isLoading || string.IsNullOrWhiteSpace(_userMood))" Class="rounded-lg">
             @if (_isLoading)
             {
