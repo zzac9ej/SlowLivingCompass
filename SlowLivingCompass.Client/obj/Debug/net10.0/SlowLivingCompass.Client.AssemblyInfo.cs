@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SlowLivingCompass.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e61bda5066818be74e3127aa93676ed58f4a4d95")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be546ac93837c64f15aab15031f91039723b001a")]
 [assembly: System.Reflection.AssemblyProductAttribute("SlowLivingCompass.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SlowLivingCompass.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
