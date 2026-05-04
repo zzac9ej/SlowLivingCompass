@@ -17,5 +17,5 @@ find release/wwwroot/_framework -name 'dotnet.native.*.js' -exec cp {} release/w
 find release/wwwroot/_framework -name 'dotnet.runtime.*.js' -exec cp {} release/wwwroot/_framework/dotnet.runtime.js \;
 find release/wwwroot/_framework -name 'dotnet.native.*.wasm' -exec cp {} release/wwwroot/_framework/dotnet.native.wasm \;
 
-# Move to public for Vercel default
-cp -r release/wwwroot public
+# Brute force: Copy everything to the root directory
+cp -r release/wwwroot/* .
