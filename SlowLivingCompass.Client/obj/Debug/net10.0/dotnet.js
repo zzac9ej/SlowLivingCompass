@@ -5,7 +5,7 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
   "mainAssemblyName": "SlowLivingCompass.Client",
   "applicationEnvironment": "Development",
   "resources": {
-    "hash": "sha256-RnUB/9Q8SprWv70UN0mIopoi8nytwP0iXStiAGw1sCA=",
+    "hash": "sha256-vtBU9o5E1XnBwz1x6adNVu4nT+EiOlHe/O072YP0gas=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.87vtjjdetb.js"
@@ -1260,16 +1260,16 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
       },
       {
         "virtualPath": "SlowLivingCompass.Client.wasm",
-        "name": "SlowLivingCompass.Client.ix761gqxeq.wasm",
-        "integrity": "sha256-pi58VPmCcEoju0THDATrlrkVEn53Rtf81MplQBE7qqo=",
+        "name": "SlowLivingCompass.Client.zd17qkdzqa.wasm",
+        "integrity": "sha256-x7z8zoIuSzlV7pf8bbfmtagmfkvyqfg59FgN+aufXF8=",
         "cache": "force-cache"
       }
     ],
     "pdb": [
       {
         "virtualPath": "SlowLivingCompass.Client.pdb",
-        "name": "SlowLivingCompass.Client.cpksdvfeh3.pdb",
-        "integrity": "sha256-0NCBeNJPA1cn49V9zj41I5GjUI8VjGsl6w/ZVFibKck=",
+        "name": "SlowLivingCompass.Client.mlv796t5z2.pdb",
+        "integrity": "sha256-RtM84sCYm4DVGmIljy6RhMZDiOEBFaSrKv+TUxG5wuY=",
         "cache": "force-cache"
       }
     ],

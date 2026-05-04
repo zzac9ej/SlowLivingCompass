@@ -1,5 +1,5 @@
 self.assetsManifest = {
-  "version": "4vnuWOMo",
+  "version": "puiL/aQY",
   "assets": [
     {
       "hash": "sha256-kN2U8rKcsMNIZYACz4DmzLurknzNU/jXDnpUivWFhe0=",
@@ -162,12 +162,12 @@ self.assetsManifest = {
       "url": "_framework/MudBlazor.l4ebjpa0nb.wasm"
     },
     {
-      "hash": "sha256-0NCBeNJPA1cn49V9zj41I5GjUI8VjGsl6w/ZVFibKck=",
-      "url": "_framework/SlowLivingCompass.Client.cpksdvfeh3.pdb"
+      "hash": "sha256-RtM84sCYm4DVGmIljy6RhMZDiOEBFaSrKv+TUxG5wuY=",
+      "url": "_framework/SlowLivingCompass.Client.mlv796t5z2.pdb"
     },
     {
-      "hash": "sha256-pi58VPmCcEoju0THDATrlrkVEn53Rtf81MplQBE7qqo=",
-      "url": "_framework/SlowLivingCompass.Client.ix761gqxeq.wasm"
+      "hash": "sha256-x7z8zoIuSzlV7pf8bbfmtagmfkvyqfg59FgN+aufXF8=",
+      "url": "_framework/SlowLivingCompass.Client.zd17qkdzqa.wasm"
     },
     {
       "hash": "sha256-i8txTGTPt84yEPhnifMAXYtYpzp2kdhPD7vDT8bQpEg=",
@@ -834,8 +834,8 @@ self.assetsManifest = {
       "url": "_framework/blazor.webassembly.66stpp682q.js"
     },
     {
-      "hash": "sha256-OHT4KKexNdbVRHi1zVeuyj1RYqbTpYIsYLVK7epxx3o=",
-      "url": "_framework/dotnet.4tn5kkexpz.js"
+      "hash": "sha256-QtzpvMEPi14hpHOi/WlRUzb1WO9kpAm0SmgdnayLDIk=",
+      "url": "_framework/dotnet.e114q9al36.js"
     },
     {
       "hash": "sha256-N5+2iI/5sboutHuGSUN15R+EfBKMKSAp3J/S04NjHxY=",
@@ -898,7 +898,7 @@ self.assetsManifest = {
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-VA+5Ul7NSnTJTuFJoQlgvDBGRyOeI0h/YgroqpSdN0k=",
+      "hash": "sha256-sTAbys/2A6uiBF77KRoSQhiz5YbpLmdi4FcnB7zrPyM=",
       "url": "index.html"
     },
     {

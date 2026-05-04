@@ -17,7 +17,7 @@ public class LlmService
         _apiKey = config["GeminiApiKey"];
     }
 
-    public async Task<List<VibeMatchResult>> GetVibeMatchesAsync(string userMood, List<Place> candidates)
+    public async Task<List<VibeMatchResult>> GetVibeMatchesAsync(string userMood, List<Place> candidates, GeolocationData? location = null)
     {
         if (string.IsNullOrWhiteSpace(_apiKey) || _apiKey == "YOUR_API_KEY_HERE")
         {
@@ -29,12 +29,26 @@ public class LlmService
         {
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={_apiKey}";
             
-            var prompt = $@"
-You are a 'Slow Living' assistant. The user's current mood is: '{userMood}'.
+            var locationInstruction = "";
+            if (location != null)
+            {
+                locationInstruction = $@"
+The user is currently located at GPS coordinates: Latitude {location.Latitude}, Longitude {location.Longitude}.
+IMPORTANT: You MUST use your world knowledge to find exactly 3 real, specific, highly-rated places (e.g. independent cafes, quiet parks, bookstores, or hidden gems) that are physically near this exact location and match the user's mood perfectly. DO NOT invent fake places. Provide the real name of the place in PlaceName.";
+            }
+            else
+            {
+                locationInstruction = $@"
 Here are {candidates.Count} possible places they could visit:
 {JsonSerializer.Serialize(candidates)}
+Select exactly 3 places from this list that best match their mood for a slow, relaxing experience.";
+            }
 
-Select exactly 3 places that best match their mood for a slow, relaxing experience.
+            var prompt = $@"
+You are a 'Slow Living' assistant. The user's current mood is: '{userMood}'.
+
+{locationInstruction}
+
 Return ONLY a valid JSON array of objects. Each object must have:
 - PlaceName (string): The name of the place
 - VibeReason (string): A short, warm, and comforting sentence in Traditional Chinese explaining why this place fits their mood.

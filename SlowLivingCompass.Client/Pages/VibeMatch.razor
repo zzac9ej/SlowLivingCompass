@@ -3,6 +3,7 @@
 @using SlowLivingCompass.Client.Services
 @inject LlmService Llm
 @inject PlaceService Places
+@inject IJSRuntime JS
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
     <MudText Typo="Typo.h3" Align="Align.Center" Class="serif-text mb-4" Style="color: #4A4A4A;">AI 秘境心靈匹配</MudText>
@@ -73,8 +74,19 @@
             // Simulate gathering local places near user
             var candidates = Places.GetRandomPlaces(15); 
             
+            // Try to get user's real location
+            GeolocationData? location = null;
+            try
+            {
+                location = await JS.InvokeAsync<GeolocationData?>("getUserGeolocation");
+            }
+            catch
+            {
+                // Ignore if blocked or unavailable
+            }
+            
             // Call our AI Service
-            _results = await Llm.GetVibeMatchesAsync(_userMood, candidates);
+            _results = await Llm.GetVibeMatchesAsync(_userMood, candidates, location);
         }
         finally
         {
