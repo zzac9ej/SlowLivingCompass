@@ -1,0 +1,85 @@
+@page "/vibe-match"
+@using SlowLivingCompass.Client.Models
+@using SlowLivingCompass.Client.Services
+@inject LlmService Llm
+@inject PlaceService Places
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudText Typo="Typo.h3" Align="Align.Center" Class="serif-text mb-4" Style="color: #4A4A4A;">AI 秘境心靈匹配</MudText>
+    <MudText Typo="Typo.body1" Align="Align.Center" Class="mb-8" Style="color: #6E7E66;">告訴我你現在的心情，讓全知嚮導為你推薦最適合放空的角落。</MudText>
+
+    <MudCard Elevation="3" Class="pa-6 mx-auto glass-panel mb-8" Style="border-radius: 16px;">
+        <MudTextField T="string" @bind-Value="_userMood" Label="你現在想逃離什麼？或是想要什麼感覺？" Variant="Variant.Outlined" Lines="4" Class="mb-4" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" FullWidth="true" OnClick="MatchVibe" Disabled="@(_isLoading || string.IsNullOrWhiteSpace(_userMood))" Class="rounded-lg">
+            @if (_isLoading)
+            {
+                <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+                <MudText Class="ms-2">AI 嚮導沉澱中...</MudText>
+            }
+            else
+            {
+                <MudText>✨ 開始分析推薦</MudText>
+            }
+        </MudButton>
+    </MudCard>
+
+    @if (_results != null && _results.Any())
+    {
+        <div class="d-flex flex-column gap-4">
+            @foreach (var result in _results)
+            {
+                <MudCard Elevation="1" Class="pa-5 glass-panel" Style="border-left: 6px solid #D4A373;">
+                    <div class="d-flex justify-space-between align-start mb-2">
+                        <MudText Typo="Typo.h6" Class="serif-text" Style="font-weight: 600; color: #4A4A4A;">@result.PlaceName</MudText>
+                        <MudChip T="string" Color="Color.Secondary" Size="Size.Small">契合度 @result.MatchScore%</MudChip>
+                    </div>
+                    <MudText Typo="Typo.body1" Style="line-height: 1.8; color: #5a6652;">
+                        "@result.VibeReason"
+                    </MudText>
+                </MudCard>
+            }
+        </div>
+    }
+</MudContainer>
+
+<style>
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px 0 rgba(122, 157, 84, 0.1);
+    }
+    .serif-text {
+        font-family: 'Noto Serif TC', serif;
+    }
+</style>
+
+@code {
+    private string _userMood = "";
+    private bool _isLoading = false;
+    private List<VibeMatchResult>? _results;
+
+    private async Task MatchVibe()
+    {
+        if (string.IsNullOrWhiteSpace(_userMood)) return;
+
+        _isLoading = true;
+        _results = null;
+        StateHasChanged();
+
+        try
+        {
+            // Simulate gathering local places near user
+            var candidates = Places.GetRandomPlaces(15); 
+            
+            // Call our AI Service
+            _results = await Llm.GetVibeMatchesAsync(_userMood, candidates);
+        }
+        finally
+        {
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

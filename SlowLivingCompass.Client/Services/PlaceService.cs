@@ -37,7 +37,7 @@ public class PlaceService
     public List<string> GetAllTags() => _places.SelectMany(p => p.Tags).Distinct().ToList();
 
     public List<string> GetThemes() => _themeMapping.Keys.ToList();
-
+    
     public List<string> GetItemsByTheme(string theme)
     {
         if (_themeMapping.TryGetValue(theme, out var items))
