@@ -2,12 +2,9 @@
   "cleanUrls": true,
   "outputDirectory": "release/wwwroot",
   "routes": [
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "src": "/_framework/(.*)", "dest": "/_framework/$1" },
+    { "src": "/css/(.*)", "dest": "/css/$1" },
+    { "src": "/js/(.*)", "dest": "/js/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
