@@ -27,7 +27,7 @@ public class LlmService
 
         try
         {
-            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={_apiKey}";
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={_apiKey}";
             
             var locationInstruction = "";
             if (location != null)
