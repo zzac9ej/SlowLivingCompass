@@ -47,7 +47,7 @@
             </div>
         }
 
-        <MudNumericField @bind-Value="_playerCount" Min="2" Max="10" Label="同行人數" Variant="Variant.Outlined" Class="mb-8 mx-auto" Style="max-width: 200px;" />
+        <MudNumericField @bind-Value="_playerCount" Min="1" Max="10" Label="同行人數" Variant="Variant.Outlined" Class="mb-8 mx-auto" Style="max-width: 200px;" />
         
         <MudButton Variant="Variant.Filled" Color="Color.Primary" 
                    OnClick="StartVoting" 
@@ -60,7 +60,14 @@
 else if (_phase == VotePhase.Voting)
 {
     <div class="animate-fade-in text-center">
-        <MudText Typo="Typo.h4" Class="mb-8 serif-text" Color="Color.Primary">請靜靜地將手機遞給第 <b>@_currentPlayerIndex</b> 位知己</MudText>
+        @if (_playerCount > 1)
+        {
+            <MudText Typo="Typo.h4" Class="mb-8 serif-text" Color="Color.Primary">請靜靜地將手機遞給第 <b>@_currentPlayerIndex</b> 位知己</MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.h4" Class="mb-8 serif-text" Color="Color.Primary">請傾聽內心，開啟你的@( _voteMode == "Type" ? "美味" : "寧靜" )探索</MudText>
+        }
         
         <MudCard Elevation="0" Class="glass-card mx-auto mb-8" Style="max-width: 500px;">
             @if (_voteMode == "Place")
@@ -88,6 +95,61 @@ else if (_phase == VotePhase.Voting)
         </MudCard>
         
         <MudText Typo="Typo.caption" Class="mt-4" Style="letter-spacing: 2px;">探索進度: @(_currentCandidateIndex + 1) / @(_voteMode == "Place" ? _currentCandidates.Count : _currentTags.Count)</MudText>
+    </div>
+}
+else if (_phase == VotePhase.Intermission)
+{
+    <div class="animate-fade-in text-center">
+        <MudPaper Class="pa-8 glass-card text-center mx-auto mb-8 animate-fade-in" Elevation="0" Style="max-width: 500px;">
+            <MudIcon Icon="@Icons.Material.Filled.CheckCircleOutline" Style="font-size: 80px;" Color="Color.Primary" Class="mb-6 pulse-animation" />
+            
+            <MudText Typo="Typo.h4" Class="mb-4 serif-text" Color="Color.Primary">
+                第 <b>@_currentPlayerIndex</b> 位知己選擇完成！
+            </MudText>
+            
+            <MudText Typo="Typo.body1" Class="mb-8" Style="color: #707A65; line-height: 1.8;">
+                隨心流動，默契已在無聲中累積。<br />
+                請將手機遞給下一位 <b>第 @(_currentPlayerIndex + 1) 位知己</b>。
+            </MudText>
+
+            <!-- 遞交進度條/狀態 -->
+            <div class="d-flex justify-center align-center gap-2 mb-8 pa-4 rounded-xl" Style="background: rgba(122, 157, 84, 0.05); width: fit-content; margin: 0 auto;">
+                @for (int i = 1; i <= _playerCount; i++)
+                {
+                    var stepNum = i;
+                    if (stepNum <= _currentPlayerIndex)
+                    {
+                        <div class="d-flex align-center justify-center rounded-circle" Style="width: 36px; height: 36px; background-color: #7A9D54; color: white;">
+                            <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" />
+                        </div>
+                    }
+                    else if (stepNum == _currentPlayerIndex + 1)
+                    {
+                        <div class="d-flex align-center justify-center rounded-circle pulse-animation" Style="width: 36px; height: 36px; background-color: #D4A373; color: white; font-weight: bold;">
+                            @stepNum
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-center justify-center rounded-circle" Style="width: 36px; height: 36px; background-color: #E0E0E0; color: #9E9E9E;">
+                            @stepNum
+                        </div>
+                    }
+                    
+                    @if (stepNum < _playerCount)
+                    {
+                        <div Style="width: 24px; height: 2px; background-color: @(stepNum < _currentPlayerIndex ? "#7A9D54" : "#E0E0E0");"></div>
+                    }
+                }
+            </div>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" 
+                       OnClick="StartNextPlayer" 
+                       Class="hover-lift px-8 py-4 rounded-pill" Size="Size.Large"
+                       StartIcon="@Icons.Material.Filled.PlayArrow">
+                我已拿到手機，開始探索
+            </MudButton>
+        </MudPaper>
     </div>
 }
 else if (_phase == VotePhase.Revealing)
@@ -177,7 +239,7 @@ else if (_phase == VotePhase.Result)
 </MudContainer>
 
 @code {
-    private enum VotePhase { Setup, Voting, Revealing, Result }
+    private enum VotePhase { Setup, Voting, Intermission, Revealing, Result }
     private VotePhase _phase = VotePhase.Setup;
     
     private string _voteMode = "Type";
@@ -267,14 +329,22 @@ else if (_phase == VotePhase.Result)
 
         if (_currentCandidateIndex >= totalLimit)
         {
-            _currentPlayerIndex++;
-            _currentCandidateIndex = 0;
-
-            if (_currentPlayerIndex > _playerCount)
+            if (_currentPlayerIndex >= _playerCount)
             {
                 _ = RevealResult();
             }
+            else
+            {
+                _phase = VotePhase.Intermission;
+            }
         }
+    }
+
+    private void StartNextPlayer()
+    {
+        _currentPlayerIndex++;
+        _currentCandidateIndex = 0;
+        _phase = VotePhase.Voting;
     }
 
     private async Task RevealResult()
