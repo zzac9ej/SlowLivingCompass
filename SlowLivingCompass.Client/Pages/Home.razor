@@ -1,14 +1,44 @@
+@page "/"
 @page "/home"
+@inject NavigationManager Navigation
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex flex-column align-center justify-center my-16 py-16 text-center">
-    <MudIcon Icon="@Icons.Material.Filled.Construction" Style="font-size: 6rem; color: #D1D5CB;" Class="mb-6" />
-    <MudText Typo="Typo.h4" Class="serif-text mb-2" Style="color: #4A4A4A;">尋找避難所</MudText>
-    <MudText Typo="Typo.h6" Class="serif-text mb-8" Color="Color.Primary">🚧 此功能還在開發中...</MudText>
-    <MudText Typo="Typo.body1" Class="mb-8" Style="color: #707A65;">請先試試看我們最新的 AI 導遊！</MudText>
-    <MudButton Href="vibe-match" Variant="Variant.Filled" Color="Color.Primary" Class="hover-lift px-8 py-3 rounded-pill serif-text" Size="Size.Large">
-        ✨ 體驗 AI 心靈匹配
-    </MudButton>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8 mb-16">
+    <div class="text-center mb-16 animate-fade-in">
+        <MudText Typo="Typo.h2" Class="serif-text mb-4" Style="color: #4A4A4A; font-weight: 700;">慢活靈感指南</MudText>
+        <MudText Typo="Typo.h6" Style="color: #707A65; font-weight: 300;">在紛擾的世界裡，找回你的心流與平靜</MudText>
+    </div>
+
+    <MudGrid Class="justify-center">
+        <MudItem xs="12" md="5">
+            <MudCard Elevation="2" Class="glass-card h-100 hover-lift" Style="cursor: pointer; border-radius: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease;" @onclick="@(() => Navigation.NavigateTo("groupvote"))">
+                <MudCardContent Class="pa-8 text-center d-flex flex-column h-100">
+                    <MudIcon Icon="@Icons.Material.Filled.Group" Style="font-size: 80px; color: #7A9D54;" Class="mb-6 pulse-hover align-self-center" />
+                    <MudText Typo="Typo.h4" Class="serif-text mb-4" Style="color: #3E4C33; font-weight: bold;">佛系揪團</MudText>
+                    <MudText Typo="Typo.body1" Style="color: #707A65; line-height: 1.8;" Class="flex-grow-1">
+                        不知道吃什麼？交給命運和默契來決定吧！<br />
+                        為選擇困難症量身打造的多人與單人隨機探索工具，<br/>輕鬆凝聚共識。
+                    </MudText>
+                    <div class="mt-8">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="rounded-pill px-8 py-2">開始海選</MudButton>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+        
+        <MudItem xs="12" md="5">
+            <MudCard Elevation="2" Class="glass-card h-100 hover-lift" Style="cursor: pointer; border-radius: 24px; transition: transform 0.3s ease, box-shadow 0.3s ease;" @onclick="@(() => Navigation.NavigateTo("vibe-match"))">
+                <MudCardContent Class="pa-8 text-center d-flex flex-column h-100">
+                    <MudIcon Icon="@Icons.Material.Filled.AutoAwesome" Style="font-size: 80px; color: #D4A373;" Class="mb-6 pulse-hover align-self-center" />
+                    <MudText Typo="Typo.h4" Class="serif-text mb-4" Style="color: #3E4C33; font-weight: bold;">AI 秘境心靈匹配</MudText>
+                    <MudText Typo="Typo.body1" Style="color: #707A65; line-height: 1.8;" Class="flex-grow-1">
+                        告訴我你現在的心情，讓全知嚮導為你推薦最適合放空的角落。<br />
+                        深度語意分析，精準契合您的靈魂頻率。
+                    </MudText>
+                    <div class="mt-8">
+                        <MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="rounded-pill px-8 py-2 text-white">✨ 體驗匹配</MudButton>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
-
-@code {
-}
