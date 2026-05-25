@@ -29,14 +29,25 @@
         <div class="d-flex flex-column gap-4">
             @foreach (var result in _results)
             {
-                <MudCard Elevation="1" Class="pa-5 glass-panel" Style="border-left: 6px solid #D4A373;">
-                    <div class="d-flex justify-space-between align-start mb-2">
-                        <MudText Typo="Typo.h6" Class="serif-text" Style="font-weight: 600; color: #4A4A4A;">@result.PlaceName</MudText>
-                        <MudChip T="string" Color="Color.Secondary" Size="Size.Small">契合度 @result.MatchScore%</MudChip>
-                    </div>
-                    <MudText Typo="Typo.body1" Style="line-height: 1.8; color: #5a6652;">
-                        "@result.VibeReason"
-                    </MudText>
+                <MudCard Elevation="2" Class="glass-panel overflow-hidden mb-4" Style="border-radius: 16px;">
+                    @if (!string.IsNullOrEmpty(result.ImageUrl))
+                    {
+                        <MudCardMedia Image="@result.ImageUrl" Height="200" />
+                    }
+                    <MudCardContent Class="pa-6">
+                        <div class="d-flex justify-space-between align-start mb-4">
+                            <MudText Typo="Typo.h5" Class="serif-text" Style="font-weight: bold; color: #3E4C33;">@result.PlaceName</MudText>
+                            <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" Size="Size.Small">契合度 @result.MatchScore%</MudChip>
+                        </div>
+                        <MudText Typo="Typo.body1" Class="mb-6" Style="line-height: 1.8; color: #5a6652;">
+                            "@result.VibeReason"
+                        </MudText>
+                        <MudButton Href="@Places.GetMapSearchUrl(result.PlaceName, Places.UserLat, Places.UserLng)" 
+                                   Target="_blank" Variant="Variant.Outlined" Color="Color.Primary" 
+                                   Class="rounded-pill px-6" StartIcon="@Icons.Material.Filled.Map">
+                            在 Google Map 探索
+                        </MudButton>
+                    </MudCardContent>
                 </MudCard>
             }
         </div>
@@ -79,6 +90,11 @@
             try
             {
                 location = await JS.InvokeAsync<GeolocationData?>("getUserGeolocation");
+                if (location != null)
+                {
+                    Places.UserLat = location.Latitude;
+                    Places.UserLng = location.Longitude;
+                }
             }
             catch
             {

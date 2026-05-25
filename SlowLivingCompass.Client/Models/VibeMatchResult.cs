@@ -5,4 +5,5 @@ public class VibeMatchResult
     public string PlaceName { get; set; } = string.Empty;
     public string VibeReason { get; set; } = string.Empty;
     public int MatchScore { get; set; } = 100;
+    public string ImageUrl { get; set; } = string.Empty;
 }

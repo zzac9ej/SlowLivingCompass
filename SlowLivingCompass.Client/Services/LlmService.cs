@@ -83,6 +83,12 @@ Do not include markdown blocks like ```json . Just the raw JSON array.
                 var results = JsonSerializer.Deserialize<List<VibeMatchResult>>(jsonText, options);
                 if (results != null && results.Any())
                 {
+                    var random = new Random();
+                    foreach (var res in results)
+                    {
+                        var match = candidates.FirstOrDefault(c => c.Name == res.PlaceName);
+                        res.ImageUrl = match?.ImageUrl ?? candidates[random.Next(candidates.Count)].ImageUrl;
+                    }
                     return results;
                 }
             }
@@ -117,7 +123,8 @@ Do not include markdown blocks like ```json . Just the raw JSON array.
             {
                 PlaceName = place.Name,
                 VibeReason = mockReasons[i % mockReasons.Count],
-                MatchScore = random.Next(85, 99)
+                MatchScore = random.Next(85, 99),
+                ImageUrl = place.ImageUrl
             });
         }
 
