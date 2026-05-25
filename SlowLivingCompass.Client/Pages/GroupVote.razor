@@ -269,6 +269,16 @@ else if (_phase == VotePhase.Result)
         }
     }
 
+    protected override void OnInitialized()
+    {
+        var hour = DateTime.Now.Hour;
+        if (hour >= 5 && hour < 10) _selectedTheme = "早餐";
+        else if (hour >= 10 && hour < 14) _selectedTheme = "午餐";
+        else if (hour >= 14 && hour < 17) _selectedTheme = "下午茶/甜點";
+        else if (hour >= 17 && hour < 21) _selectedTheme = "晚餐";
+        else _selectedTheme = "宵夜";
+    }
+
     private void StartVoting()
     {
         _currentTags = PlaceService.GetItemsByTheme(_selectedTheme);
@@ -367,9 +377,11 @@ else if (_phase == VotePhase.Result)
     {
         return theme switch
         {
-            "正餐" => Icons.Material.Filled.Restaurant,
-            "小吃/宵夜" => Icons.Material.Filled.Nightlife,
-            "甜點/下午茶" => Icons.Material.Filled.BakeryDining,
+            "早餐" => Icons.Material.Filled.BakeryDining,
+            "午餐" => Icons.Material.Filled.LunchDining,
+            "晚餐" => Icons.Material.Filled.DinnerDining,
+            "宵夜" => Icons.Material.Filled.Nightlife,
+            "下午茶/甜點" => Icons.Material.Filled.EmojiFoodBeverage,
             "異國/特色" => Icons.Material.Filled.FlightTakeoff,
             _ => Icons.Material.Filled.Category
         };
