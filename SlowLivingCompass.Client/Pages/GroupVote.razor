@@ -183,20 +183,41 @@ else if (_phase == VotePhase.Result)
             }
             else
             {
-                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-8 rounded-xl">
-                    在此距離內暫無「@_winningTag」的精選名單，但別擔心，直接在地圖搜尋會有更多發現。
+                <MudAlert Severity="Severity.Success" Variant="Variant.Outlined" Class="mb-8 rounded-xl" Style="border-color: #7A9D54; color: #7A9D54;">
+                    目前的探索半徑內較少符合的店家，但您可以點擊下方按鈕擴大地圖搜尋範圍，一定能找到驚喜！
                 </MudAlert>
             }
 
-            <div class="d-flex flex-column gap-4 align-center">
+            <div class="d-flex flex-column gap-4 align-center mb-10">
                 <MudButton Href="@PlaceService.GetMapSearchUrl(_winningTag, PlaceService.UserLat, PlaceService.UserLng)" 
                            Target="_blank" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" 
                            Class="hover-lift rounded-pill px-10 py-4" StartIcon="@Icons.Material.Filled.Map">
-                    在 Google Map 查看附近所有「@_winningTag」
+                    在 Google Map 探索「@_winningTag」
                 </MudButton>
                 
-                <MudText Typo="Typo.caption" Color="Color.Default">將直接顯示附近評分最高的推薦店家</MudText>
+                <MudText Typo="Typo.caption" Color="Color.Default">將直接為您展開附近評分最高的店家地圖</MudText>
             </div>
+
+            @if (_runnerUpTags.Any())
+            {
+                <MudDivider Class="my-8" Style="opacity: 0.3;" />
+                <MudText Typo="Typo.h6" Class="mb-4 serif-text" Style="color: #707A65;">或者，這些高人氣選項也值得考慮：</MudText>
+                <div class="d-flex justify-center gap-4 flex-wrap">
+                    @for (int i = 0; i < _runnerUpTags.Count; i++)
+                    {
+                        var tag = _runnerUpTags[i];
+                        var rank = i + 2;
+                        <MudButton Href="@PlaceService.GetMapSearchUrl(tag, PlaceService.UserLat, PlaceService.UserLng)"
+                                   Target="_blank"
+                                   Variant="Variant.Outlined" 
+                                   Color="Color.Secondary" 
+                                   Class="hover-lift rounded-pill px-6 py-2"
+                                   StartIcon="@(rank == 2 ? Icons.Material.Filled.LooksTwo : Icons.Material.Filled.Looks3)">
+                            @tag
+                        </MudButton>
+                    }
+                </div>
+            }
         }
         <MudButton Class="mt-12 hover-lift rounded-pill px-8" Variant="Variant.Outlined" Color="Color.Primary" OnClick="Reset">重新開始</MudButton>
     </div>
@@ -218,6 +239,7 @@ else if (_phase == VotePhase.Result)
 
     private List<string> _currentTags = new();
     private string? _winningTag;
+    private List<string> _runnerUpTags = new();
     private List<Place> _recommendedShops = new();
     private Dictionary<string, int> _voteTally = new();
 
@@ -294,13 +316,14 @@ else if (_phase == VotePhase.Result)
         // Calculate result first
         if (!_voteTally.Any()) return;
 
-        int maxVotes = _voteTally.Values.Max();
-        var winners = _voteTally.Where(kv => kv.Value == maxVotes).Select(kv => kv.Key).ToList();
         var random = new Random();
-        var finalWinner = winners[random.Next(winners.Count)];
+        // Sort tags by votes descending, then randomly for ties
+        var sortedTags = _voteTally.OrderByDescending(kv => kv.Value).ThenBy(kv => random.Next()).Select(kv => kv.Key).ToList();
 
-        _winningTag = finalWinner;
-        _recommendedShops = PlaceService.GetMatchesByTag(_winningTag, PlaceService.UserLat, PlaceService.UserLng);
+        _winningTag = sortedTags.FirstOrDefault();
+        _runnerUpTags = sortedTags.Skip(1).Take(2).ToList();
+
+        _recommendedShops = PlaceService.GetMatchesByTag(_winningTag!, PlaceService.UserLat, PlaceService.UserLng);
 
         // Dramatic countdown
         _phase = VotePhase.Revealing;
@@ -336,6 +359,7 @@ else if (_phase == VotePhase.Result)
     {
         _showConfetti = false;
         _winningTag = null;
+        _runnerUpTags.Clear();
         _phase = VotePhase.Setup;
     }
 
